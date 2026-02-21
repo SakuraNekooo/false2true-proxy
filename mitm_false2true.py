@@ -84,7 +84,7 @@ class FalseToTrue:
             try:
                 # Parse JSON to ensure we don't break the structure
                 parsed = json.loads(text)
-                modified_text = self._replace_in_json(parsed)
+                parsed = self._replace_in_json(parsed)
                 modified_text = json.dumps(parsed, ensure_ascii=False)
             except json.JSONDecodeError:
                 # If it's not valid JSON, use the simple replacement
