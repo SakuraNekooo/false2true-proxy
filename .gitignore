@@ -60,3 +60,25 @@ htmlcov/
 *.tmp
 *.temp
 /tmp/
+
+# Docker
+.dockerignore
+docker-compose.override.yml
+docker-compose.prod.yml
+docker-compose.dev.yml
+*.tar.gz
+*.tgz
+docker-scan-*.json
+
+# Build artifacts
+false2true-proxy-*.tar.gz
+false2true-proxy-*.zip
+
+# Local development files
+.local/
+.devcontainer/
+
+# CI/CD
+.gh-token
+.github_token
+.github-token

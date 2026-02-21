@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  false2true-proxy:
+    build: .
+    image: ghcr.io/sakuranekooo/false2true-proxy:latest
+    container_name: false2true-proxy
+    ports:
+      - "8080:8080"
+      - "8081:8081"  # For mitmproxy web interface if enabled
+    environment:
+      - MITMPROXY_VERBOSE=false
+    volumes:
+      - mitmproxy-data:/home/mitmuser/.mitmproxy
+      - ./logs:/app/logs
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 10s
+    command: ["-s", "mitm_false2true.py", "--listen-host", "0.0.0.0", "--set", "block_global=false"]
+
+  test-server:
+    build:
+      context: .
+      dockerfile: Dockerfile.test
+    container_name: false2true-test-server
+    ports:
+      - "8000:8000"
+    environment:
+      - PYTHONUNBUFFERED=1
+    command: ["python", "examples/test_server.py"]
+    depends_on:
+      - false2true-proxy
+
+volumes:
+  mitmproxy-data:

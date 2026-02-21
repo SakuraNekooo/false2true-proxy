@@ -10,8 +10,6 @@ A MITMProxy addon that automatically replaces `false` with `true` in HTTP respon
 - 📊 Logging and statistics
 - 🚫 Skips binary content (images, videos, etc.)
 - 🔧 Configurable via command-line options
-- 🐳 Docker container support
-- ☁️ GitHub Container Registry (GHCR) hosted images
 
 ## Installation
 
@@ -21,7 +19,7 @@ A MITMProxy addon that automatically replaces `false` with `true` in HTTP respon
 
 ### Install from source
 ```bash
-git clone https://github.com/SakuraNekooo/false2true-proxy.git
+git clone https://github.com/yourusername/false2true-proxy.git
 cd false2true-proxy
 pip install -r requirements.txt
 ```
@@ -31,18 +29,9 @@ pip install -r requirements.txt
 pip install mitmproxy
 ```
 
-### Docker Installation
-```bash
-# Pull from GitHub Container Registry
-docker pull ghcr.io/sakuranekooo/false2true-proxy:latest
-
-# Or build locally
-docker build -t false2true-proxy .
-```
-
 ## Usage
 
-### Basic usage (Python)
+### Basic usage
 ```bash
 mitmdump -s mitm_false2true.py
 ```
@@ -50,61 +39,6 @@ mitmdump -s mitm_false2true.py
 ### With mitmproxy (interactive)
 ```bash
 mitmproxy -s mitm_false2true.py
-```
-
-### Docker Usage
-
-#### Run with Docker
-```bash
-# Basic usage
-docker run -p 8080:8080 ghcr.io/sakuranekooo/false2true-proxy:latest
-
-# Custom port
-docker run -p 8888:8080 ghcr.io/sakuranekooo/false2true-proxy:latest --listen-port 8888
-
-# Persist mitmproxy data
-docker run -p 8080:8080 -v mitmproxy-data:/home/mitmuser/.mitmproxy ghcr.io/sakuranekooo/false2true-proxy:latest
-
-# Save traffic to file
-docker run -p 8080:8080 -v ./traffic:/home/mitmuser/.mitmproxy ghcr.io/sakuranekooo/false2true-proxy:latest -w /home/mitmuser/.mitmproxy/traffic.mitm
-```
-
-#### Docker Compose
-```bash
-# Start with docker-compose
-docker-compose up -d
-
-# View logs
-docker-compose logs -f
-
-# Stop
-docker-compose down
-```
-
-#### Kubernetes (example)
-```yaml
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: false2true-proxy
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: false2true-proxy
-  template:
-    metadata:
-      labels:
-        app: false2true-proxy
-    spec:
-      containers:
-      - name: false2true-proxy
-        image: ghcr.io/sakuranekooo/false2true-proxy:latest
-        ports:
-        - containerPort: 8080
-        env:
-        - name: MITMPROXY_VERBOSE
-          value: "false"
 ```
 
 ### Set proxy in your browser or system
@@ -122,26 +56,6 @@ mitmdump -s mitm_false2true.py -v
 
 # Save modified traffic to file
 mitmdump -s mitm_false2true.py -w modified_traffic.mitm
-
-# Docker with custom options
-docker run -p 8080:8080 ghcr.io/sakuranekooo/false2true-proxy:latest --set block_global=false -v
-```
-
-## Container Registry
-
-The Docker image is available on GitHub Container Registry:
-
-**Primary Image:** `ghcr.io/sakuranekooo/false2true-proxy:latest`
-
-**Available Tags:**
-- `latest` - Latest stable release
-- `v1.x.x` - Version tags (e.g., v1.0.0)
-- `sha-xxxxxx` - Commit SHA tags
-- `main` - Latest from main branch
-
-**Pull Command:**
-```bash
-docker pull ghcr.io/sakuranekooo/false2true-proxy:latest
 ```
 
 ## How It Works
@@ -196,20 +110,12 @@ var hasError = true;
 - 🎭 Pranks (use responsibly!)
 - 🔬 Research on client-side validation
 - 🛠️ Development and prototyping
-- 🐳 Containerized testing environments
-- ☁️ Cloud-native application testing
 
 ## Configuration
 
 ### Environment Variables
 - `FALSE2TRUE_PORT` - Proxy port (default: 8080)
 - `FALSE2TRUE_VERBOSE` - Enable verbose logging
-- `MITMPROXY_VERBOSE` - MITMProxy verbose mode
-
-### Docker Environment Variables
-```bash
-docker run -e MITMPROXY_VERBOSE=true -p 8080:8080 ghcr.io/sakuranekooo/false2true-proxy:latest
-```
 
 ### Content Types Processed
 By default, the addon processes these content types:
@@ -225,13 +131,8 @@ By default, the addon processes these content types:
 false2true-proxy/
 ├── mitm_false2true.py    # Main MITMProxy addon
 ├── requirements.txt      # Python dependencies
-├── Dockerfile           # Docker image definition
-├── docker-compose.yml   # Docker Compose configuration
-├── .dockerignore        # Docker ignore file
 ├── README.md            # This file
 ├── .gitignore           # Git ignore file
-├── .github/workflows/   # CI/CD workflows
-│   └── docker.yml       # Docker build and push workflow
 ├── examples/            # Example configurations
 │   ├── custom_rules.py  # Example of custom rules
 │   └── test_server.py   # Simple test server
@@ -246,24 +147,12 @@ false2true-proxy/
 python -m pytest tests/
 ```
 
-### Building Docker image locally
-```bash
-# Build image
-docker build -t false2true-proxy .
-
-# Run tests
-docker run --rm false2true-proxy --version
-
-# Run with test server
-docker-compose up
-```
-
-### GitHub Actions
-The project includes GitHub Actions workflow that:
-1. Builds Docker image on push to main
-2. Runs security scans
-3. Pushes to GitHub Container Registry
-4. Creates releases on version tags
+### Adding new features
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests if applicable
+5. Submit a pull request
 
 ### Code style
 - Follow PEP 8
@@ -278,7 +167,6 @@ The project includes GitHub Actions workflow that:
 2. **The MITMProxy CA certificate must be installed in the client browser/device**
 3. **This will break SSL/TLS verification unless the certificate is trusted**
 4. **Some applications may behave unexpectedly when `false` becomes `true`**
-5. **Docker containers run as non-root user for security**
 
 ## Troubleshooting
 
@@ -290,23 +178,10 @@ Run MITMProxy and follow the instructions to install its CA certificate.
 2. Verify the content-type is being processed
 3. Enable verbose logging with `-v`
 
-### Docker container issues
-```bash
-# Check container logs
-docker logs <container_name>
-
-# Check if container is running
-docker ps | grep false2true-proxy
-
-# Run with interactive shell for debugging
-docker run -it --entrypoint /bin/bash ghcr.io/sakuranekooo/false2true-proxy:latest
-```
-
 ### Performance issues
 The addon adds minimal overhead. For high-traffic scenarios, consider:
 - Using `mitmdump` instead of `mitmproxy` (non-interactive)
 - Adding domain whitelisting in the code
-- Adjusting Docker resource limits
 
 ## License
 
@@ -314,13 +189,11 @@ MIT License - see LICENSE file for details.
 
 ## Contributing
 
-Contributions are welcome! Please see CONTRIBUTING.md for details.
+Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## Acknowledgments
 
 - [MITMProxy](https://mitmproxy.org/) for the amazing proxy framework
-- [Docker](https://www.docker.com/) for containerization
-- [GitHub Actions](https://github.com/features/actions) for CI/CD
 - All contributors and users of this project
 
 ---
